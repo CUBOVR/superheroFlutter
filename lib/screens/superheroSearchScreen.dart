@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:superhero_app/data/model/superheroDetailResponse.dart';
 import 'package:superhero_app/data/model/superheroResponse.dart';
 import 'package:superhero_app/data/repository.dart';
+import 'package:superhero_app/screens/superheroDetailScreen.dart';
 
 class SuperheroSearchscreen extends StatefulWidget {
   const SuperheroSearchscreen({super.key});
@@ -47,9 +48,8 @@ class _SuperheroSearchscreenState extends State<SuperheroSearchscreen> {
     return FutureBuilder(
       future: _superheroInfo,
       builder: (context, snapshot) {
-        if (isTextEmpty) {
-          return Text("Introduce un nombre para buscar");
-        }
+        if (isTextEmpty)
+          return Center(child: Text("Introduce un nombre para buscar"));
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
@@ -77,35 +77,44 @@ class _SuperheroSearchscreenState extends State<SuperheroSearchscreen> {
 
   Padding itemSuperhero(SuperheroDetailResponse item) => Padding(
     padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-    child: Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.blueGrey,
-      ),
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              item.url,
-              height: 250,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              alignment: Alignment(0, -0.6),
+    child: GestureDetector(
+      onTap:
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SuperheroDetailScreen(superhero: item),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              item.name,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.blueGrey,
+        ),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(
+                item.url,
+                height: 250,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                alignment: Alignment(0, -0.6),
               ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                item.name,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
